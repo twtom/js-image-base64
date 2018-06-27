@@ -17,10 +17,21 @@
                 ratio: 0.75,                            /*【选填】压缩率默认0.75 */
                 file: me,                               /*【必填】对应的上传元素 */
                 callback: function (imageUrl){         /*【必填】处理成功后的回调函数 */
-                    /*imageUrl为得到的图片base64数据，这里可以进行上传到服务器或者其他逻辑操作 */
-                    var img = new Image();
-                    img.src = imageUrl;
-                    document.getElementById("image-list").appendChild(img);
+                    $.ajax({
+                        type: 'POST',
+            			url: "{{ url('avatar/upload') }}",
+            			data: { 'data' : imageUrl, '_token': '{!! csrf_token() !!}'},
+            			dataType: 'json',
+            			success: function(data){
+                            if (data.err) {
+                                alert('上传失败，请重新上传')
+                            } else {
+                                var img = new Image();
+                                img.src = imageUrl;
+                                document.getElementById("image-list").appendChild(img);
+                            }
+                        }
+                    })
                 },
             });
         };
