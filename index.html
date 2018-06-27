@@ -18,9 +18,22 @@
                 file: me,                               /*【必填】对应的上传元素 */
                 callback: function (imageUrl){         /*【必填】处理成功后的回调函数 */
                     /*imageUrl为得到的图片base64数据，这里可以进行上传到服务器或者其他逻辑操作 */
-                    var img = new Image();
-                    img.src = imageUrl;
-                    document.getElementById("image-list").appendChild(img);
+                    // laravel 框架下的
+                    $.ajax({
+                        type: 'POST',
+            			url: "{{ url('avatar/upload') }}", // 图片保存路由，服务端处理见 upload.php
+            			data: { 'data' : imageUrl, '_token': '{!! csrf_token() !!}'},
+            			dataType: 'json',
+            			success: function(data){
+                            if (data.err) {
+                                alert('上传失败，请重新上传')
+                            } else {
+                                var img = new Image();
+                                img.src = imageUrl;
+                                $("#image-list").append(img);
+                            }
+                        }
+                    })
                 },
             });
         };
